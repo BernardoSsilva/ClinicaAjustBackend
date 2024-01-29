@@ -17,6 +17,7 @@ model User{
   userPassword String @map("password")
   dateCreated DateTime @default(now()) @map("created_date")
   hours Schedule[]
+  diagnosis Diagnosis[]
 
   @@map("users")
 }
@@ -32,3 +33,27 @@ model Schedule{
 
   @@map("schedule")
 }
+
+
+model Images{
+  imageId Int @id @default(autoincrement()) @map("image_id")
+  imageName String @map("image_name")
+  stored String 
+  createdAt DateTime @default(now())
+  imageAtribuition Diagnosis @relation(fields: [examAtribuiton], references: [diagnosiId])
+  examAtribuiton Int
+
+  @@map("Images")
+}
+model Diagnosis{
+  diagnosiId Int @id @default(autoincrement()) @map("id_diagnosis")
+  diagnosiAuthor User @relation(fields: [author], references: [userId])
+  author Int @map("author_id")
+  description String
+  pacientName String @map("pacient")
+  images Images[]
+  @@map("diagnosis")
+}
+
+
+
