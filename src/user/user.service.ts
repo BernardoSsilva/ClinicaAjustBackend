@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { prisma } from 'prisma/client';
@@ -17,7 +17,7 @@ export class UserService {
         }
       })
     }catch (error){
-      return false
+      return new HttpException("Bad request", 400)
     }
   }
 
@@ -25,7 +25,7 @@ export class UserService {
     try{
       return await prisma.user.findMany()
     }catch (error){
-      return false
+      return new HttpException("Bad request", 400)
     }
   }
 
@@ -35,7 +35,7 @@ export class UserService {
         where : {userId: id}
       })
     }catch (error){
-      return false
+      return new HttpException("Bad request", 400)
     }
   }
 
@@ -52,7 +52,7 @@ export class UserService {
         }
       })
     }catch (error){
-      return false
+      return new HttpException("Bad request", 400)
     }
   }
 

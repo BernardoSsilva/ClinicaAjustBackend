@@ -13,9 +13,22 @@ datasource db {
 model User{
   userId Int @id @default(autoincrement())
   userName String @map("name")
-  userEmail String @map("email")
+  userEmail  String @map("email") @unique
   userPassword String @map("password")
   dateCreated DateTime @default(now()) @map("created_date")
+  hours Schedule[]
 
   @@map("users")
+}
+
+model Schedule{
+  hourId Int @id @default(autoincrement())
+  author User @relation(fields: [authorId], references: [userId])
+  authorId Int 
+  hour String 
+  client String
+  service String
+  dateService DateTime
+
+  @@map("schedule")
 }
