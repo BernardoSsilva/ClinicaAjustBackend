@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
@@ -10,28 +10,37 @@ export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService, private jwtService:JwtService) {}
 
   @Post()
-  async create(@Body() createScheduleDto: CreateScheduleDto) {
-    const authorId = 1
-    return this.scheduleService.create(createScheduleDto,authorId);
+  async create(@Body() createScheduleDto: CreateScheduleDto, @Headers("authorization") token:string) {
+    token = token.replace('Bearer ', '')
+    const decodedToken = await this.jwtService.decode(token.toString())
+    return this.scheduleService.create(createScheduleDto,decodedToken.sub);
   }
 
   @Get()
-  findAll() {
-    return this.scheduleService.findAll();
+  async findAll( @Headers("authorization") token:string) {
+    token = token.replace('Bearer ', '')
+    const decodedToken = await this.jwtService.decode(token.toString())
+    return this.scheduleService.findAll(decodedToken.sub);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.scheduleService.findOne(+id);
+  async findOne(@Param('id') id: string,  @Headers("authorization") token:string) {
+    token = token.replace('Bearer ', '')
+    const decodedToken = await this.jwtService.decode(token.toString())
+    return this.scheduleService.findOne(+id, decodedToken.sub);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
-    return this.scheduleService.update(+id, updateScheduleDto);
+  async update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto, @Headers("authorization") token:string) {
+    token = token.replace('Bearer ', '')
+    const decodedToken = await this.jwtService.decode(token.toString())
+    return this.scheduleService.update(+id, updateScheduleDto, decodedToken.sub);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.scheduleService.remove(+id);
+  async remove(@Param('id') id: string,  @Headers("authorization") token:string) {
+    token = token.replace('Bearer ', '')
+    const decodedToken = await this.jwtService.decode(token.toString())
+    return this.scheduleService.remove(+id, decodedToken.sub);
   }
 }

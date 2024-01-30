@@ -15,7 +15,5 @@ export class CreateScheduleDto {
     @IsString()
     service :string
 
-    
-    @IsString()
-    dateService: Date
+
 }

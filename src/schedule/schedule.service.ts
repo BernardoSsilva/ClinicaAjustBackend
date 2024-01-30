@@ -5,49 +5,51 @@ import { prisma } from 'prisma/client';
 
 @Injectable()
 export class ScheduleService {
-  create(createScheduleDto: CreateScheduleDto, authorId) {
+  async create(createScheduleDto: CreateScheduleDto, authorId) {
     try {
-      return prisma.schedule.create({
-        data: {
+      return await prisma.schedule.create({
+        data:{
           authorId,
-          hour: createScheduleDto.hour,
-          client: createScheduleDto.client,
-          service: createScheduleDto.service,
-          dateService: createScheduleDto.dateService,
-        },
+          hour:createScheduleDto.hour,
+          client:createScheduleDto.client,
+          service:createScheduleDto.service,
+        }
+      })
+    } catch (err) {
+      return new HttpException('Bad request', 400);
+    }
+  }
+
+  findAll(authorId) {
+    try {
+      return prisma.schedule.findMany({
+        where:{
+          authorId
+        }
       });
     } catch (err) {
       return new HttpException('Bad request', 400);
     }
   }
 
-  findAll() {
-    try {
-      return prisma.schedule.findMany();
-    } catch (err) {
-      return new HttpException('Bad request', 400);
-    }
-  }
-
-  findOne(id: number) {
+  findOne(id: number, authorId) {
     try {
       return prisma.schedule.findUnique({
-        where: { hourId: id },
+        where: { hourId: id , authorId},
       });
     } catch (err) {
       return new HttpException('Bad request', 400);
     }
   }
 
-  update(id: number, updateScheduleDto: UpdateScheduleDto) {
+  update(id: number, updateScheduleDto: UpdateScheduleDto, authorId) {
     try{
       return prisma.schedule.update({
-        where: { hourId: id },
+        where: { hourId: id, authorId },
         data: {
           hour: updateScheduleDto.hour,
           client: updateScheduleDto.client,
           service: updateScheduleDto.service,
-          dateService: updateScheduleDto.dateService,
         },
       });
     } catch(err){
@@ -55,11 +57,11 @@ export class ScheduleService {
     }
   }
 
-  remove(id: number) {
+  remove(id: number, authorId) {
     
     try{
       return prisma.schedule.delete({
-        where: { hourId: id },
+        where: { hourId: id , authorId},
       });
     }catch(err){
       return new HttpException('Bad request', 400);

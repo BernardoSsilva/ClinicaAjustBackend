@@ -3,5 +3,5 @@ export class Schedule {
   hour :string
   client:string
   service :string
-  dateService: Date
+  dateService?: Date
 }

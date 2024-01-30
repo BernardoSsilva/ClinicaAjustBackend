@@ -29,7 +29,7 @@ model Schedule{
   hour String 
   client String
   service String
-  dateService DateTime @default(now())
+  dateService DateTime? @default(now()) @map("date_service")
 
   @@map("schedule")
 }
