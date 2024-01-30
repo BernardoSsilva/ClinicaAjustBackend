@@ -1,26 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { prisma } from 'prisma/client';
 
 @Injectable()
 export class ImageService {
   create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
+    try{
+      return prisma.images.create({
+        data: createImageDto
+      })
+    }catch(err){
+      return new HttpException("Bad Request", 400)
+    }
   }
 
   findAll() {
-    return `This action returns all image`;
+    try{
+      return prisma.images.findMany()
+    }catch(err){
+      return new HttpException("Bad Request", 400)
+    }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} image`;
+    try{
+      return prisma.images.findUnique({
+        where:{
+          imageId:id
+        }
+      })
+    }catch(err){
+      return new HttpException("Bad Request", 400)
+    }
   }
 
   update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
+    try{
+      return prisma.images.update({
+        where:{
+          imageId:id
+        },
+        data: updateImageDto
+      })
+    }catch(err){
+      return new HttpException("Bad Request", 400)
+    }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} image`;
+    try{
+      return prisma.images.delete({
+        where:{
+          imageId:id
+        }
+      })
+    }catch(err){
+      return new HttpException("Bad Request", 400)
+    }
   }
 }
