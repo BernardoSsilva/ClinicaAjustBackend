@@ -5,11 +5,11 @@ import { prisma } from 'prisma/client';
 
 @Injectable()
 export class ScheduleService {
-  create(createScheduleDto: CreateScheduleDto) {
+  create(createScheduleDto: CreateScheduleDto, authorId) {
     try {
       return prisma.schedule.create({
         data: {
-          authorId: createScheduleDto.authorId,
+          authorId,
           hour: createScheduleDto.hour,
           client: createScheduleDto.client,
           service: createScheduleDto.service,

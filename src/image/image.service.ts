@@ -5,10 +5,14 @@ import { prisma } from 'prisma/client';
 
 @Injectable()
 export class ImageService {
-  create(createImageDto: CreateImageDto) {
+  create(file, examId) {
     try{
       return prisma.images.create({
-        data: createImageDto
+        data: {
+          imageName: file.originalname,
+          stored: file.filename,
+          examAtribuiton: examId,
+        }
       })
     }catch(err){
       return new HttpException("Bad Request", 400)
