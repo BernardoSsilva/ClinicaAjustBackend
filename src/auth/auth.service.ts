@@ -21,6 +21,8 @@ export class AuthService {
         },
       });
 
+      
+
       const passwordMatch = await bcrypt.compare(authBody.password, user.userPassword);
 
       if (!passwordMatch) {
