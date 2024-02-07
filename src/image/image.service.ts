@@ -1,13 +1,14 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateImageDto } from './dto/create-image.dto';
-import { UpdateImageDto } from './dto/update-image.dto';
 import { prisma } from 'prisma/client';
+import { UpdateImageDto } from './dto/update-image.dto';
+import { Image } from './entities/image.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class ImageService {
-  create(file, examId) {
+  async create(file, examId) {
     try{
-      return prisma.images.create({
+      return await prisma.images.create({
         data: {
           imageName: file.originalname,
           stored: file.filename,
@@ -19,9 +20,14 @@ export class ImageService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try{
-      return prisma.images.findMany()
+      const result =  await prisma.images.findMany()
+
+      const b64Images = result.map((image) =>{
+        const base64Image = this.toBase64(image)
+        return base64Image
+      })
     }catch(err){
       return new HttpException("Bad Request", 400)
     }
@@ -62,5 +68,16 @@ export class ImageService {
     }catch(err){
       return new HttpException("Bad Request", 400)
     }
+  }
+
+
+  toBase64(image:Image){
+    try{
+      const base64 = fs.readFileSync(`uploads/${image.stored}`, `base64`);
+      return base64
+    } catch(err){
+      return new HttpException("Bad Request", 400)
+    }
+   
   }
 }

@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { ImageService } from './image.service';
-import { CreateImageDto } from './dto/create-image.dto';
-import { UpdateImageDto } from './dto/update-image.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateImageDto } from './dto/update-image.dto';
+import { ImageService } from './image.service';
+import { diskStorage } from 'multer';
 
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @Post("/:examId")
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: 'uploads',
+      }),
+    }),
+  )
   create(@UploadedFile() file: Express.Multer.File, examId: number) {
     return this.imageService.create(file, examId);
   }
