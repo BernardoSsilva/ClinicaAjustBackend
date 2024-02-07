@@ -28,31 +28,37 @@ export class ImageService {
         const base64Image = this.toBase64(image)
         return base64Image
       })
+
+      return b64Images
     }catch(err){
       return new HttpException("Bad Request", 400)
     }
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try{
-      return prisma.images.findUnique({
+      const result = await prisma.images.findUnique({
         where:{
           imageId:id
         }
       })
+
+      return this.toBase64(result)
     }catch(err){
       return new HttpException("Bad Request", 400)
     }
   }
 
-  update(id: number, updateImageDto: UpdateImageDto) {
+  async update(id: number, updateImageDto: UpdateImageDto) {
     try{
-      return prisma.images.update({
+      const result = await prisma.images.update({
         where:{
           imageId:id
         },
         data: updateImageDto
       })
+
+       return this.toBase64(result)
     }catch(err){
       return new HttpException("Bad Request", 400)
     }
